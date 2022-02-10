@@ -19,7 +19,8 @@ where qtyOnHand > 1007;
 --Question 4
 select firstName, homeCity
 from People
-where True; --placeholder
+where extract(year from dob) >= 1920 and
+      extract(year from dob) < 1930;
 
 --Question 5
 select prefix, lastName
@@ -36,13 +37,13 @@ where city != 'Dallas' and
 --Question 7
 select *
 from Orders
-where True; --placeholder
+where extract(month from dateOrdered) = 1;
 
 --Question 8
 select *
 from Orders
 where totalUSD >= 23000 and
-      True; --placeholder
+      extract(month from dateOrdered) = 2;
 	  
 --Question 9
 select *
