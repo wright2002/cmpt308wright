@@ -1,0 +1,96 @@
+--Kyle Wright
+--2/17/22
+--CMPT308 Lab 4: Subqueries
+
+--Question 1
+select *
+from People
+where pid in (select pid
+			  from Customers);
+
+--Question 2
+select *
+from People
+where pid in (select pid
+			  from Agents);
+
+--Question 3
+select *
+from People
+where pid in (select pid
+			  from Customers)
+  and pid in (select pid
+			  from Agents);
+
+--Question 4
+select *
+from People
+where pid not in (select pid
+			      from Customers)
+  and pid not in (select pid
+			      from Agents);
+
+--Question 5
+select pid
+from Customers
+where pid in (select custID
+			  from Orders
+			  where prodID = 'p01'
+			     or prodID = 'p03');
+
+--Question 6
+select distinct pid
+from Customers
+where pid in (select custID
+			  from Orders
+			  where prodID = 'p01')
+  and pid in (select custID
+			  from Orders
+			  where prodID = 'p03')
+order by pid DESC;
+	  
+--Question 7
+select firstName, lastName
+from People
+where pid in (select pid
+			  from Agents
+			  where pid in (select agentID
+			  		        from Orders
+			                where prodID = 'p01'
+			                   or prodID = 'p03'))
+order by lastName DESC;
+
+--Question 8
+select homeCity, dob
+from People
+where pid in (select pid
+			  from Agents
+			  where pid in (select agentID
+			  		        from Orders
+			                where custID = 8))
+order by homeCity ASC;
+	  
+--Question 9
+select distinct prodID
+from Products
+where prodID in (select prodID
+			     from Orders
+				 where agentID in (select agentID
+								   from Orders
+								   where custID in (select pid
+												    from People
+												    where homeCity = 'Montreal')))
+order by prodID ASC;
+
+--Question 10
+select lastName, homeCity
+from People
+where pid in (select pid
+			  from Customers
+			  where pid in (select custID
+			  		        from Orders
+			                where agentID in (select pid
+											  from People
+											  where homeCity = 'Chilliwack'
+											     or homeCity = 'New Orleans')))
+order by lastName ASC;
