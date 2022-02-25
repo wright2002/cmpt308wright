@@ -1,0 +1,68 @@
+--Kyle Wright
+--2/17/22
+--CMPT308 Lab 5: Joins
+
+--Question 1
+select People.*
+from People inner join Customers on People.pid = Customers.pid;
+
+--Question 2
+select People.*
+from People inner join Agents on People.pid = Agents.pid;
+
+--Question 3
+select People.*, Agents.*
+from People inner join Customers on People.pid = Customers.pid
+            inner join Agents on People.pid = Agents.pid;
+
+--Question 4
+select firstName
+from People
+where pid in (select pid
+			  from Customers
+			  where pid not in(select custID
+				               from Orders));
+
+--Question 5
+select firstName
+from People inner join Customers on People.pid = Customers.pid
+       left outer join Orders on Customers.pid = Orders.custID
+where orderNum is null;
+
+--Question 6
+select distinct Agents.pid, Agents.commissionPct
+from Agents inner join Orders on Agents.pid = Orders.agentID
+where Orders.custID = 8
+order by Agents.commissionPct DESC;
+	  
+--Question 7
+select distinct People.lastName, People.homeCity, Agents.commissionPct
+from Agents inner join Orders on Agents.pid = Orders.agentID
+            inner join People on Agents.pid = People.pid
+where Orders.custID = 1
+order by Agents.commissionPct DESC;
+
+--Question 8
+select People.lastName, People.homeCity
+from Customers inner join People on Customers.pid = People.pid
+where People.homeCity = (select city
+						 from Products
+						 where city = 'Montreal');
+	  
+--Question 9
+select distinct Products.prodID, Products.name
+from Products inner join Orders on Products.prodID = Orders.prodID
+              inner join Agents on Agents.pid = Orders.agentID
+where Agents.pid in (select agentID
+					 from orders
+					 where custID in (select pid
+									  from People
+									  where homeCity = 'Arlington'))
+order by Products.name ASC;
+
+--Question 10
+select p1.firstName, p1.lastName, p2.firstName, p2.lastName, p1.homeCity
+from People p1 inner join People p2 on p1.homeCity = p2.homeCity
+		 right outer join Agents on p1.pid = Agents.pid
+		 right outer join Customers on p2.pid = Customers.pid
+where not p1.pid = p2.pid;
