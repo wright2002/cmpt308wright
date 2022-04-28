@@ -1,0 +1,45 @@
+--Lab 10: Stored Procedures
+--Kyle Wright
+
+--Problem 1
+create or replace function pre_reqs_for(int, REFCURSOR) returns refcursor as 
+$$
+declare
+   course_num  int       := $1;
+   resultset   REFCURSOR := $2;
+begin
+   open resultset for 
+      select num, name, credits
+      from   Courses
+	  where num in (select preReqNum
+				    from Prerequisites
+				    where Prerequisites.courseNum = course_num);
+   return resultset;
+end;
+$$ 
+language plpgsql;
+
+select pre_reqs_for(221, 'results');
+Fetch all from results;
+
+
+--Problem 2
+create or replace function is_pre_req_for(int, REFCURSOR) returns refcursor as 
+$$
+declare
+   course_num  int       := $1;
+   resultset   REFCURSOR := $2;
+begin
+   open resultset for 
+      select num, name, credits
+      from   Courses
+	  where num in (select courseNum
+				    from Prerequisites
+				    where Prerequisites.preReqNum = course_num);
+   return resultset;
+end;
+$$ 
+language plpgsql;
+
+select is_pre_req_for(120, 'results');
+Fetch all from results;
