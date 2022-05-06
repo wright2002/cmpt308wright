@@ -380,3 +380,63 @@ from UnitsQuickReport
 ---------------------
 --Stored Procedures--
 ---------------------
+--vacantSearch--
+CREATE OR REPLACE FUNCTION vacantSearch(text, boolean, refcursor) RETURNS refcursor AS 
+$$
+DECLARE
+  dim text :=$1;
+  isClimate boolean :=$2;
+  resultset refcursor :=$3;
+BEGIN
+  open resultset FOR
+      select *
+	  from VacantUnits v
+	  where dim = v.dimensions and isClimate = v.isCC
+	  ;
+  RETURN resultset;
+ END
+$$
+language plpgsql;
+
+SELECT vacantSearch('5x5' , '1', 'results');
+FETCH ALL FROM results;
+
+--custHistory--
+CREATE OR REPLACE FUNCTION custHistory(int, refcursor) RETURNS refcursor AS 
+$$
+DECLARE
+  cid int :=$1;
+  resultset refcursor :=$2;
+BEGIN
+  open resultset FOR
+      select *
+	  from RentedUnitsHistory h
+	  where cid = h.pid
+	  ;
+  RETURN resultset;
+ END
+$$
+language plpgsql;
+
+SELECT custHistory(10, 'results');
+FETCH ALL FROM results;
+
+--unitHistory--
+CREATE OR REPLACE FUNCTION unitHistory(int, refcursor) RETURNS refcursor AS 
+$$
+DECLARE
+  unit int :=$1;
+  resultset refcursor :=$2;
+BEGIN
+  open resultset FOR
+      select *
+	  from RentedUnitsHistory h
+	  where unit = h.uid
+	  ;
+  RETURN resultset;
+ END
+$$
+language plpgsql;
+
+SELECT unitHistory(2, 'results');
+FETCH ALL FROM results;
